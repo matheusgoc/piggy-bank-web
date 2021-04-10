@@ -31,6 +31,10 @@ After cloning the code, install the node dependencies:
 
 ### `npm install`
 
+Copy the `.env-example` file and rename it to:
+
+### `.env`
+
 Then, run the app in the development mode:
 
 ### `npm start`
