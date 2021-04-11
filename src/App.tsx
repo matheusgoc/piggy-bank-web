@@ -8,6 +8,7 @@ import SignIn from './features/profile/SignIn'
 import TransactionList from './features/transaction/TransactionList'
 import TransactionForm from './features/transaction/TransactionForm'
 import NotFound from './features/notfound/NotFound'
+import SignUp from './features/profile/SignUp';
 
 function App() {
 
@@ -20,7 +21,7 @@ function App() {
             <HomeView />
           </Route>
           <Route path="/signup">
-            <SignIn />
+            <SignUp />
           </Route>
           <Route path="/signin">
             <SignIn />
