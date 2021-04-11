@@ -25,7 +25,7 @@ Follow below the current libraries and frameworks stack aggregated to this proje
 | [Axios](https://github.com/axios/axios)                           | ^0.21.1     |
 | [Material-UI](https://material-ui.com/)                           | ^4.11.3     |
 | [React Router](https://reactrouter.com/web/guides/quick-start)    | ^5.2.0      |
-
+| [Formik](https://formik.org/)                                     | ^2.2.6      |
 
 ## Run
 
