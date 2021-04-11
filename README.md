@@ -17,13 +17,15 @@ This project is built on top of [React JS Library](https://reactjs.org/) integra
 [React Redux](https://react-redux.js.org/). 
 Follow below the current libraries and frameworks stack aggregated to this project:
 
-| Libraries                                      | Versions    |
-| ---------------------------------------------- | ----------- |
-| [ReactJS](https://reactjs.org/)                | ^17.0.2     |
-| [TypeScript](https://www.typescriptlang.org/)  | ^4.2.4      |
-| [React Redux](https://react-redux.js.org/)     | ^7.2.3      |
-| [Axios](https://github.com/axios/axios)        | ^0.21.1     |
-| [Material-UI](https://material-ui.com/)        | ^4.11.3     |
+| Libraries                                                         | Versions    |
+| ----------------------------------------------------------------- | ----------- |
+| [ReactJS](https://reactjs.org/)                                   | ^17.0.2     |
+| [TypeScript](https://www.typescriptlang.org/)                     | ^4.2.4      |
+| [React Redux](https://react-redux.js.org/)                        | ^7.2.3      |
+| [Axios](https://github.com/axios/axios)                           | ^0.21.1     |
+| [Material-UI](https://material-ui.com/)                           | ^4.11.3     |
+| [React Router](https://reactrouter.com/web/guides/quick-start)    | ^5.2.0      |
+
 
 ## Run
 
