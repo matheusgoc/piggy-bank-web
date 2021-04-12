@@ -12,12 +12,19 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import Divider from '@material-ui/core/Divider';
 import InboxIcon from '@material-ui/icons/MoveToInbox';
+import { Link } from '@material-ui/core';
+
+interface NavItemI {
+  label: string,
+  url: string,
+  icon: JSX.Element
+}
 
 const Header = () => {
 
   const classes = useStyles()
 
-  const [linkGroups, setLinkGroups] = useState([
+  const initialNav: NavItemI[][] = [
     [
       {label: "Home", url: "/", icon: <InboxIcon />},
     ],
@@ -30,7 +37,9 @@ const Header = () => {
       {label: "Sign Up", url: "/signup", icon: <InboxIcon />},
       {label: "Sign Out", url: "/signout", icon: <InboxIcon />},
     ]
-  ])
+  ];
+
+  const [nav, setNav] = useState(initialNav)
 
   const [isMenuOpen, setMenuOpen] = useState(false)
 
@@ -46,12 +55,14 @@ const Header = () => {
             aria-label="menu">
             <MenuIcon />
           </IconButton>
-          <img src={"/logo-white-vertical.png"} className={classes.logo} />
-          <Button color="inherit" href='signin'>Sign In</Button>
+          <Link href='\'>
+            <img src={"/logo-white-vertical.png"} className={classes.logo} />
+          </Link>
+          <Button color="inherit" href='/signin'>Sign In</Button>
         </Toolbar>
       </AppBar>
       <Drawer anchor='left' open={isMenuOpen} onClose={() => {setMenuOpen(false)}}>
-        {linkGroups.map((links, index) => (
+        {nav.map((links, index) => (
           <>
             <List key={index}>
               {links.map(({label, url, icon}) => (
@@ -61,7 +72,7 @@ const Header = () => {
                 </ListItem>
               ))}
             </List>
-            {(index < linkGroups.length - 1)? (<Divider />) : null}
+            {(index < nav.length - 1)? (<Divider />) : null}
           </>
         ))}
       </Drawer>

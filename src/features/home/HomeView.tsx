@@ -19,11 +19,7 @@ const HomeView = () => {
       <Container maxWidth={'md'} className={classes.container}>
         <Box className={classes.box}>
           <Typography variant='h2' component='h1' className={classes.title}>Ready to save money?</Typography>
-          <Button href="/signup"
-            variant={'contained'}
-            color="primary"
-            disableElevation
-          >Sign Up</Button>
+          <Button href='/signup' variant='contained' color='primary' size='large' disableElevation>Sign Up</Button>
         </Box>
         <Grid container direction={'row'} justify={'center'} alignItems={'center'} spacing={4}>
         {cards.map(({title, image, imageAlt}) => (
