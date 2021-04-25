@@ -22,8 +22,8 @@ const NavigationRouter = () => {
     {path: '/signup', component: <SignUp />, exact: false, restrict: false, subRoutes: null},
     {path: '/signin', component: <SignIn />, exact: false, restrict: false, subRoutes: null},
     {path: '/transactions', component: <TransactionList />, exact: false, restrict: false, subRoutes: [
-        {path: '/transactions/add', component: <TransactionForm />, exact: false, restrict: true, subRoutes: null},
-        {path: '/transactions/:id', component: <TransactionForm />, exact: false, restrict: false, subRoutes: null},
+        {path: '/transactions/add', component: <TransactionList />, exact: false, restrict: true, subRoutes: null},
+        {path: '/transactions/:id', component: <TransactionList />, exact: false, restrict: false, subRoutes: null},
       ]},
     {path: '*', component: <NotFound />, exact: false, restrict: false, subRoutes: null},
   ];

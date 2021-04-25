@@ -22,8 +22,8 @@ const HomeView = () => {
           <Button href='/signup' variant='contained' color='primary' size='large' disableElevation>Sign Up</Button>
         </Box>
         <Grid container direction={'row'} justify={'center'} alignItems={'center'} spacing={4}>
-        {cards.map(({title, image, imageAlt}) => (
-          <Grid item md={4} sm={6} xs={12}>
+        {cards.map(({title, image, imageAlt}, index) => (
+          <Grid item md={4} sm={6} xs={12} key={index}>
             <Card>
               <CardMedia
                 style={{height: '200px'}}

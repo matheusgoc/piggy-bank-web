@@ -3,7 +3,7 @@ import Toolbar from '@material-ui/core/Toolbar';
 import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
 import Button from '@material-ui/core/Button';
-import React, { useState } from 'react';
+import React, { Fragment, useState } from 'react';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import Drawer from '@material-ui/core/Drawer';
 import List from '@material-ui/core/List';
@@ -12,7 +12,7 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import Divider from '@material-ui/core/Divider';
 import InboxIcon from '@material-ui/icons/MoveToInbox';
-import { Link } from '@material-ui/core';
+import { Box, Link } from '@material-ui/core';
 
 interface NavItemI {
   label: string,
@@ -20,7 +20,11 @@ interface NavItemI {
   icon: JSX.Element
 }
 
-const Header = () => {
+interface HeaderProps {
+  children?: React.ReactElement;
+}
+
+const Header = (props: HeaderProps) => {
 
   const classes = useStyles()
 
@@ -45,7 +49,7 @@ const Header = () => {
 
   return (
     <>
-      <AppBar position="static">
+      <AppBar position="fixed">
         <Toolbar className={classes.toolbar}>
           <IconButton
             onClick={() => {setMenuOpen(true)}}
@@ -61,19 +65,21 @@ const Header = () => {
           <Button color="inherit" href='/signin'>Sign In</Button>
         </Toolbar>
       </AppBar>
+      <Box height="5em" />
       <Drawer anchor='left' open={isMenuOpen} onClose={() => {setMenuOpen(false)}}>
         {nav.map((links, index) => (
-          <>
-            <List key={index}>
-              {links.map(({label, url, icon}) => (
-                <ListItem button key={label} component="a" href={url} onClick={() => setMenuOpen(false)}>
+          <Fragment key={index}>
+            <List>
+              {links.map(({label, url, icon}, index2) => (
+                <ListItem button component="a" href={url} key={index2}
+                  onClick={() => setMenuOpen(false)}>
                   <ListItemIcon>{icon}</ListItemIcon>
                   <ListItemText primary={label} />
                 </ListItem>
               ))}
             </List>
-            {(index < nav.length - 1)? (<Divider />) : null}
-          </>
+            {(index < nav.length - 1)? <Divider /> : null}
+          </Fragment>
         ))}
       </Drawer>
     </>
@@ -82,13 +88,19 @@ const Header = () => {
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
+    root: {
+      '& parent': {
+        marginTop: '10em'
+      }
+    },
     menuButton: {
       marginRight: theme.spacing(2),
     },
     logo: {
-      maxHeight: '50px',
+      maxHeight: '4em',
     },
     toolbar: {
+      height: '5em',
       justifyContent: 'space-between',
     },
   }),

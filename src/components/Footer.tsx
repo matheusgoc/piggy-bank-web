@@ -4,7 +4,7 @@ import React from 'react';
 
 const Footer = () => {
   return (
-    <Box mt={5}>
+    <Box my={5}>
       <Typography variant="body2" color="textSecondary" align="center">
         {'Copyright © '}
         <Link color="inherit" href="https://github.com/matheusgoc/">
