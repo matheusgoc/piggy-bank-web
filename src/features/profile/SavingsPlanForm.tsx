@@ -4,6 +4,8 @@ import { Button, Grid, Hidden, MenuItem, TextField, Typography } from '@material
 import { ArrowBack, ArrowForward } from '@material-ui/icons'
 import { ProfileModel } from '../../models/ProfileModel'
 import NumberFormatCustom from '../../components/NumberFormatCustom'
+import { useDispatch, useSelector } from 'react-redux';
+import { getProfile, setProfile } from './ProfileSlice';
 
 interface SavingsPlanFormProps {
   onSubmit(): void
@@ -11,13 +13,18 @@ interface SavingsPlanFormProps {
 }
 
 const SavingsPlanForm = ({onSubmit, onBack}: SavingsPlanFormProps) => {
-  const profile = new ProfileModel()
+
+  const profile = useSelector(getProfile)
+  const dispatch = useDispatch()
+
+  const handleSubmit = (profileToSave: ProfileModel) => {
+    dispatch(setProfile(profileToSave))
+    onSubmit()
+  }
+
   const formik = useFormik({
     initialValues: profile,
-    onSubmit: (values: ProfileModel) => {
-      console.log(values)
-      onSubmit()
-    },
+    onSubmit: handleSubmit,
   })
 
   return (

@@ -10,7 +10,7 @@ import Typography from '@material-ui/core/Typography'
 import { Container } from '@material-ui/core'
 import Header from '../../components/Header'
 import Footer from '../../components/Footer'
-import PasswordForm from './PassordForm'
+import PasswordForm from './PasswordForm'
 import SavingsPlanForm from './SavingsPlanForm'
 import ProfileForm from './ProfileForm'
 

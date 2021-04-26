@@ -5,6 +5,9 @@ import { Box, Button, CircularProgress, Grid, Slide, TextField, Typography } fro
 import React, { useState } from 'react'
 import { AccountCircle, ArrowBack } from '@material-ui/icons';
 import { useHistory } from "react-router-dom";
+import { useDispatch, useSelector } from 'react-redux';
+import { getProfile, clearProfile } from './ProfileSlice';
+import ProfileService from '../../services/ProfileService';
 
 interface SavingsPlanFormProps {
   onBack(): void
@@ -14,14 +17,23 @@ const PasswordForm = ({onBack}: SavingsPlanFormProps) => {
 
   const [loading, setLoading] = useState(false)
   const history = useHistory()
-  const profile = new ProfileModel()
 
-  const handleSubmit = (profile: ProfileModel) => {
+  const profile = useSelector(getProfile)
+  const dispatch = useDispatch()
+
+  const handleSubmit = (profileToSave: ProfileModel) => {
     setLoading(true)
-    setTimeout(() => {
-      console.log(profile)
+    const profileService = new ProfileService()
+    profileService.save(profileToSave).then((profileSaved) => {
+
+      dispatch(clearProfile())
       history.push("/signin")
-    }, 3000)
+
+    }).catch((error) => {
+
+      console.error("PasswordForm.handleSubmit", error)
+
+    }).finally(() => setLoading(false))
   }
 
   const validationSchema = Yup.object({

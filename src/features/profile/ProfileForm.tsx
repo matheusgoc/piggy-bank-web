@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { Button, Grid, Hidden, MenuItem, TextField } from '@material-ui/core'
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
@@ -8,13 +8,23 @@ import moment from 'moment'
 import { ArrowForward } from '@material-ui/icons'
 import { ProfileModel } from '../../models/ProfileModel'
 import { US_STATES } from '../../constants'
+import { useDispatch, useSelector } from 'react-redux';
+import { clearProfile, getProfile, setProfile } from './ProfileSlice';
 
 interface ProfileFormProps {
   onSubmit(): void
 }
 
 const ProfileForm = ({onSubmit}: ProfileFormProps) => {
-  const profile = new ProfileModel()
+
+  const profile = useSelector(getProfile)
+  const dispatch = useDispatch()
+
+  const handleSubmit = (profileToSave: ProfileModel) => {
+    dispatch(setProfile(profileToSave))
+    onSubmit()
+  }
+
   const validationSchema = Yup.object({
     firstName: Yup.string()
       .max(15, 'Must be 15 characters or less')
@@ -29,10 +39,7 @@ const ProfileForm = ({onSubmit}: ProfileFormProps) => {
   const formik = useFormik({
     initialValues: profile,
     validationSchema: validationSchema,
-    onSubmit: (values: ProfileModel) => {
-      console.log(values)
-      onSubmit()
-    },
+    onSubmit: handleSubmit,
   });
 
   return (
@@ -91,8 +98,8 @@ const ProfileForm = ({onSubmit}: ProfileFormProps) => {
             select fullWidth
             variant="outlined">
             <MenuItem value=""><em>None</em></MenuItem>
-            <MenuItem value='male'>Male</MenuItem>
-            <MenuItem value='female'>Female</MenuItem>
+            <MenuItem value='M'>Male</MenuItem>
+            <MenuItem value='F'>Female</MenuItem>
           </TextField>
         </Grid>
         <Grid item sm={4} xs={12}>
