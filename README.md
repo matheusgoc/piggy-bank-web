@@ -22,6 +22,7 @@ Follow below the current libraries and frameworks stack aggregated to this proje
 | [ReactJS](https://reactjs.org/)                                   | ^17.0.2     |
 | [TypeScript](https://www.typescriptlang.org/)                     | ^4.2.4      |
 | [React Redux](https://react-redux.js.org/)                        | ^7.2.3      |
+| [React Persist](https://github.com/rt2zz/redux-persist/)          | ^6.0.0      |
 | [Axios](https://github.com/axios/axios)                           | ^0.21.1     |
 | [Material-UI](https://material-ui.com/)                           | ^4.11.3     |
 | [React Router](https://reactrouter.com/web/guides/quick-start)    | ^5.2.0      |

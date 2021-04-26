@@ -1,4 +1,7 @@
-import { createMuiTheme } from '@material-ui/core';
+import { createMuiTheme } from '@material-ui/core'
+
+export const API_URL = "http://piggy-bank-api/api/"
+export const STORAGE_URL = "http://piggy-bank-api/storage/"
 
 export const COLORS = {
   primary: '#006600',
@@ -82,4 +85,15 @@ export const US_STATES = {
   'WV': 'West Virginia',
   'WI': 'Wisconsin',
   'WY': 'Wyoming'
+}
+
+export const HTTP_STATUS = {
+  OK: 200,
+  CREATED: 201,
+  NO_CONTENT: 204,
+  UNAUTHORIZED: 401,
+  FORBIDDEN: 403,
+  REQUEST_TIMEOUT: 408,
+  CONFLICT: 409,
+  UNPROCESSABLE_ENTITY: 422,
 }
