@@ -1,23 +1,30 @@
 import React, { useState } from 'react'
 import {
-  Avatar, Box,
+  Avatar,
+  Box,
   Button,
-  Checkbox, CircularProgress,
-  Container, DialogActions,
+  Checkbox,
+  CircularProgress,
+  Container,
   FormControlLabel,
   Grid,
   Link,
-  makeStyles, Slide, Snackbar,
+  makeStyles,
+  Slide,
+  Snackbar,
   TextField,
   Typography,
 } from '@material-ui/core'
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined'
 import Header from '../../components/Header'
 import Footer from '../../components/Footer'
-import * as Yup from 'yup';
-import { useFormik } from 'formik';
-import { useHistory } from "react-router-dom";
-import { Alert } from '@material-ui/lab';
+import * as Yup from 'yup'
+import { useFormik } from 'formik'
+import { useHistory } from "react-router-dom"
+import { Alert } from '@material-ui/lab'
+import ProfileService from '../../services/ProfileService'
+import { useDispatch } from 'react-redux'
+import { setProfile } from './ProfileSlice'
 
 interface SigInFormI {
   email: string
@@ -30,15 +37,22 @@ const SignIn = () => {
   const [error, setError] = useState('')
   const classes = useStyles()
   const history = useHistory()
+  const dispatch = useDispatch()
 
-  const handleSubmit = () => {
+  const handleSubmit = (values: SigInFormI) => {
     setLoading(true)
-    setTimeout((values: SigInFormI) => {
-      console.log(values)
-      setLoading(false)
-      setError('Email or password does not match!')
-      // history.push("/transactions")
-    },3000)
+    const profileService = new ProfileService()
+    profileService.signIn(values.email, values.password).then((profile) => {
+
+      dispatch(setProfile(profile))
+      history.push("/transactions")
+
+    }).catch((error) => {
+
+      setError("Email or password does not match!")
+      console.error("SignIn.handleSubmit", error)
+
+    }).finally(() => setLoading(false))
   }
 
   const validationSchema = Yup.object({

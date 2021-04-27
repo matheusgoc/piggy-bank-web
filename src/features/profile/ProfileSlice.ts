@@ -5,28 +5,28 @@ export const ProfileSlice = createSlice({
   name: 'profile',
   initialState: {
     data:  new ProfileModel(),
-    logged: false,
+    token: '',
   },
   reducers: {
-    setLogged: (state, action:PayloadAction<boolean>) => {
-      state.logged = action.payload
+    setToken: (state, action:PayloadAction<string>) => {
+      state.token = action.payload
     },
     setProfile: (state, action) => {
       state.data = action.payload
     },
     clearProfile: (state) => {
-      state.logged = false
+      state.token = ''
       state.data = new ProfileModel()
     }
   },
 })
 
 // actions
-export const { setProfile, setLogged, clearProfile } = ProfileSlice.actions
+export const { setProfile, setToken, clearProfile } = ProfileSlice.actions
 
 // selectors
 export const getProfile = state => state.profile.data
-export const isLogged = state => state.profile.logged
+export const getToken = state => state.profile.token
 
 // reducers
 export default ProfileSlice.reducer

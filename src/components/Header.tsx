@@ -1,23 +1,30 @@
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
-import IconButton from '@material-ui/core/IconButton';
-import MenuIcon from '@material-ui/icons/Menu';
-import Button from '@material-ui/core/Button';
-import React, { Fragment, useState } from 'react';
-import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
-import Drawer from '@material-ui/core/Drawer';
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemText from '@material-ui/core/ListItemText';
-import Divider from '@material-ui/core/Divider';
-import InboxIcon from '@material-ui/icons/MoveToInbox';
-import { Box, Link } from '@material-ui/core';
+import AppBar from '@material-ui/core/AppBar'
+import Toolbar from '@material-ui/core/Toolbar'
+import IconButton from '@material-ui/core/IconButton'
+import MenuIcon from '@material-ui/icons/Menu'
+import Button from '@material-ui/core/Button'
+import React, { Fragment, useState } from 'react'
+import { useHistory } from "react-router-dom"
+import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
+import Drawer from '@material-ui/core/Drawer'
+import List from '@material-ui/core/List'
+import ListItem from '@material-ui/core/ListItem'
+import ListItemIcon from '@material-ui/core/ListItemIcon'
+import ListItemText from '@material-ui/core/ListItemText'
+import Divider from '@material-ui/core/Divider'
+import InboxIcon from '@material-ui/icons/MoveToInbox'
+import { Backdrop, Box, CircularProgress, Link } from '@material-ui/core'
+import { useDispatch, useSelector } from 'react-redux'
+import { getToken, clearProfile } from '../features/profile/ProfileSlice'
+import { clearReports } from '../features/reports/ReportsSlice'
+import { clearTransactionList } from '../features/transaction/TransactionSlice'
+import ProfileService from '../services/ProfileService'
 
 interface NavItemI {
   label: string,
-  url: string,
-  icon: JSX.Element
+  uri?: string,
+  action?(): void,
+  icon: JSX.Element,
 }
 
 interface HeaderProps {
@@ -26,26 +33,54 @@ interface HeaderProps {
 
 const Header = (props: HeaderProps) => {
 
+  const history = useHistory()
   const classes = useStyles()
+  const dispatch = useDispatch()
+  const token = useSelector(getToken)
 
-  const initialNav: NavItemI[][] = [
-    [
-      {label: "Home", url: "/", icon: <InboxIcon />},
-    ],
-    [
-      {label: "Transactions", url: "/transactions", icon: <InboxIcon />},
-      {label: "Add Transactions", url: "/transactions/add", icon: <InboxIcon />},
-    ],
-    [
-      {label: "Sign In", url: "/signin", icon: <InboxIcon />},
-      {label: "Sign Up", url: "/signup", icon: <InboxIcon />},
-      {label: "Sign Out", url: "/signout", icon: <InboxIcon />},
+  const handleSignOut = () => {
+    const profileService = new ProfileService()
+    setLoading(true)
+    profileService.signOut().then(() => {
+      console.log("Header.handleSignOut: User has been logged out");
+    }).catch((error) => {
+      console.error("Header.handleSignOut: "+error);
+    }).finally(() => {
+      dispatch(clearProfile())
+      dispatch(clearReports())
+      dispatch(clearTransactionList())
+      setNav(getNav())
+      setMenuOpen(false)
+      setLoading(false)
+      history.push('/')
+    })
+  }
+
+  const getNav = (): NavItemI[][] => {
+    return (token)? [
+      [
+        {label: "Home", uri: "/", icon: <InboxIcon />},
+      ],
+      [
+        {label: "Transactions", uri: "/transactions", icon: <InboxIcon />},
+        {label: "Add Transactions", uri: "/transactions/add", icon: <InboxIcon />},
+      ],
+      [
+        {label: "Sign Out", uri: "#a", icon: <InboxIcon />, action: handleSignOut},
+      ]
+    ] : [
+      [
+        {label: "Home", uri: "/", icon: <InboxIcon />},
+      ],
+      [
+        {label: "Sign In", uri: "/signin", icon: <InboxIcon />},
+        {label: "Sign Up", uri: "/signup", icon: <InboxIcon />},
+      ]
     ]
-  ];
-
-  const [nav, setNav] = useState(initialNav)
-
+  }
+  const [nav, setNav] = useState(getNav())
   const [isMenuOpen, setMenuOpen] = useState(false)
+  const [loading, setLoading] = useState(false)
 
   return (
     <>
@@ -62,7 +97,10 @@ const Header = (props: HeaderProps) => {
           <Link href='\'>
             <img src={"/logo-white-vertical.png"} className={classes.logo} />
           </Link>
-          <Button color="inherit" href='/signin'>Sign In</Button>
+          {(token)
+            ? <Button color="inherit" href='#a' onClick={handleSignOut}>Sign Out</Button>
+            : <Button color="inherit" href='/signin'>Sign In</Button>
+          }
         </Toolbar>
       </AppBar>
       <Box height="5em" />
@@ -70,9 +108,9 @@ const Header = (props: HeaderProps) => {
         {nav.map((links, index) => (
           <Fragment key={index}>
             <List>
-              {links.map(({label, url, icon}, index2) => (
-                <ListItem button component="a" href={url} key={index2}
-                  onClick={() => setMenuOpen(false)}>
+              {links.map(({label, uri, icon, action}, index2) => (
+                <ListItem button component='a' href={uri} key={index2}
+                  onClick={() => (action)? action : setMenuOpen(false)}>
                   <ListItemIcon>{icon}</ListItemIcon>
                   <ListItemText primary={label} />
                 </ListItem>
@@ -82,6 +120,9 @@ const Header = (props: HeaderProps) => {
           </Fragment>
         ))}
       </Drawer>
+      <Backdrop className={classes.backdrop} open={loading}>
+        <CircularProgress color="inherit" />
+      </Backdrop>
     </>
   )
 }
@@ -102,6 +143,10 @@ const useStyles = makeStyles((theme: Theme) =>
     toolbar: {
       height: '5em',
       justifyContent: 'space-between',
+    },
+    backdrop: {
+      zIndex: theme.zIndex.drawer + 1,
+      color: '#fff',
     },
   }),
 );

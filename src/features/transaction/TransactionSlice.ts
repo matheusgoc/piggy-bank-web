@@ -15,11 +15,14 @@ export const TransactionSlice = createSlice({
     setTransactionList: (state, action: PayloadAction<TransactionModel[]>) => {
       state.list = action.payload
     },
+    clearTransactionList: (state) => {
+      state.list = [] as TransactionModel[]
+    }
   }
 })
 
 // actions
-export const { setCurrentDate, setTransactionList } = TransactionSlice.actions
+export const { setCurrentDate, setTransactionList, clearTransactionList } = TransactionSlice.actions
 
 // selectors
 export const getCurrentDate = state => state.transaction.date

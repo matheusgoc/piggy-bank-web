@@ -1,6 +1,7 @@
 import axios, { AxiosInstance } from 'axios'
 import { API_URL, HTTP_STATUS } from '../constants';
 import { store } from '../redux/store';
+import { getToken } from '../features/profile/ProfileSlice';
 
 export default class BaseService {
 
@@ -9,6 +10,9 @@ export default class BaseService {
   protected api:AxiosInstance
 
   constructor() {
+    if (!BaseService.TOKEN) {
+      BaseService.TOKEN = getToken(store.getState())
+    }
     this.api = axios.create({baseURL: API_URL})
     this.setRequestInterceptor()
   }

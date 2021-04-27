@@ -2,6 +2,7 @@ import moment from 'moment'
 import { HTTP_STATUS } from '../constants'
 import BaseService from './BaseService';
 import { ProfileModel } from '../models/ProfileModel';
+import { setToken } from '../features/profile/ProfileSlice'
 
 /**
  * ProfileService
@@ -39,7 +40,9 @@ export default class ProfileService extends BaseService {
       })
 
       if (res.status === HTTP_STATUS.OK) {
+
         BaseService.TOKEN = res.data.token
+        this.dispatch(setToken(BaseService.TOKEN))
 
         return this.mapToStore(res.data.profile)
       }
@@ -88,6 +91,23 @@ export default class ProfileService extends BaseService {
     }
 
     return profile
+  }
+
+  // Revoke the user's access token and clear states and storage data to log the user out
+  async signOut(revoke=true):Promise<void> {
+    try {
+
+      if (revoke) {
+        // revoke the current token
+        await this.api.get('profile/revoke')
+      }
+
+    } catch (error) {
+
+      const method = 'ProfileServiceApi.signOut'
+      const msg = 'The logout has fail'
+      this.handleHttpError(method, msg, error)
+    }
   }
 
   // Map profile's data to be saved in the server
