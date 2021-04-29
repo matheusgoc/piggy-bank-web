@@ -23,22 +23,26 @@ const NavigationRouter = () => {
 
   const initialRoutes: NavigationRouteI[] = [
     {path: '/', component: <HomeView />, exact: true, restrict: false, subRoutes: null},
-    {path: '/signup', component: <SignUp />, exact: false, restrict: false, subRoutes: null},
-    {path: '/signin', component: <SignIn />, exact: false, restrict: false, subRoutes: null},
-    {path: '/transactions', component: <TransactionList />, exact: false, restrict: !token, subRoutes: [
-        {path: '/transactions/add', component: <TransactionList />, exact: false, restrict: !token, subRoutes: null},
-      ]},
-    {path: '*', component: <NotFound />, exact: false, restrict: false, subRoutes: null},
-  ];
+    {path: '/signup', component: <SignUp />, exact: true, restrict: false, subRoutes: null},
+    {path: '/signin', component: <SignIn />, exact: true, restrict: false, subRoutes: null},
+    {path: '/transactions', component: <TransactionList />, exact: true, restrict: !token, subRoutes: [
+        {path: '/transactions/add', component: <TransactionList action="add" />, exact: true, restrict: !token, subRoutes: null},
+    ]},
+    {path: '*', component: <NotFound />, exact: true, restrict: false, subRoutes: null},
+  ]
 
   const [routes, setRoutes] = useState(initialRoutes);
+
+  useEffect(() => {
+    setRoutes(initialRoutes)
+  }, [token])
 
   const buildRoutes = (routes: NavigationRouteI[]) => routes.map((route, index) =>
     (route.subRoutes && route.subRoutes.length)? (
       <Route path={route.path} key={index}>
         <Switch>
           <Route exact={route.exact} path={route.path}>
-            {route.component}
+            {(route.restrict)? <NotAllowed /> : route.component}
           </Route>
           {buildRoutes(route.subRoutes)}
         </Switch>

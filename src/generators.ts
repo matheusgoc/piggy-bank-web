@@ -1,5 +1,4 @@
 import { TransactionModel } from './models/TransactionModel';
-import moment from 'moment';
 
 export const categoriesSamples = [
   "Income",

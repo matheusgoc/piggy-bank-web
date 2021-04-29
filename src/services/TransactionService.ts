@@ -21,7 +21,7 @@ interface TransactionLoad {
 export default class TransactionService extends BaseService {
 
   // Load the transactions list and reports
-  async load(year, month):Promise<TransactionLoad | undefined> {
+  async load(year, month):Promise<TransactionLoad | any> {
 
     try {
 
@@ -45,7 +45,7 @@ export default class TransactionService extends BaseService {
   }
 
   // Persist a transaction in the server
-  async save(transaction: TransactionModel, showError = true): Promise<TransactionModel | undefined>{
+  async save(transaction: TransactionModel, showError = true): Promise<TransactionModel | any>{
 
     try {
 
@@ -86,7 +86,8 @@ export default class TransactionService extends BaseService {
     return {
       id: transaction.id,
       type: transaction.type,
-      category: transaction.category.name,
+      key: Math.ceil(Math.random() * 1000000).toString(),
+      category: transaction.category,
       amount: transaction.amount,
       place: transaction.place,
       description: transaction.description,
@@ -101,7 +102,7 @@ export default class TransactionService extends BaseService {
       id: transaction['id'],
       amount: transaction['amount'],
       type: transaction['type'],
-      category: transaction['category'],
+      category: transaction['category']['name'],
       place: transaction['place'],
       description: transaction['description'],
       receipt: transaction['receipt'],

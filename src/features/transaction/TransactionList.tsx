@@ -1,57 +1,73 @@
 import React, { useEffect, useState } from 'react'
 import {
-  AppBar,
   Box,
   Button,
   CircularProgress,
   Container,
+  createStyles,
   Dialog,
   DialogActions,
   DialogContent,
   DialogContentText,
   DialogTitle,
   Fade,
-  IconButton,
   List,
   Modal,
   Paper,
   Slide,
-  Toolbar,
   Typography,
   useTheme,
 } from '@material-ui/core'
-import { ArrowBack, ArrowForward, DeleteForever } from '@material-ui/icons'
-import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
-import DeleteSweepIcon from '@material-ui/icons/DeleteSweep'
-import SearchIcon from '@material-ui/icons/Search'
-import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline'
 import Header from '../../components/Header'
 import Footer from '../../components/Footer'
 import TransactionForm from './TransactionForm'
 import { TransactionModel } from '../../models/TransactionModel'
 import TransactionListItem from '../../components/TransactionListItem'
-import { generateTransactionsList } from '../../generators';
-import TransactionListItemSkeleton from '../../components/TransactionListItemSkeleton';
-import TransactionListEmptyState from '../../components/TransactionListEmptyState';
+import TransactionListItemSkeleton from '../../components/TransactionListItemSkeleton'
+import TransactionListEmptyState from '../../components/TransactionListEmptyState'
+import TransactionService from '../../services/TransactionService'
+import moment from 'moment'
+import { getCurrentDate, getTransactionList, setTransactionList } from './TransactionSlice'
+import { setGeneralReport, setMonthlyReport } from '../reports/ReportsSlice'
+import { useDispatch, useSelector } from 'react-redux'
+import TransactionListHeader from '../../components/TransactionListHeader'
+import { makeStyles, Theme } from '@material-ui/core/styles'
 
-const TransactionList = () => {
-  const [loading, setLoading] = useState(false)
-  const [isFormOpen, openForm] = useState(false)
-  const [isRemoveEnable, enableRemove] = useState(false)
-  const [isRemoveDialogOpen, openRemoveDialog] = useState(false)
-  const [transactions, setTransactions]: [TransactionModel[], any] = useState([])
-  const [transactionToEdit, setTransactionTotEdit] = useState(new TransactionModel())
+interface TransactionListProps {
+  action?: string
+}
+
+const TransactionList = ({action}: TransactionListProps) => {
+
+  const dispatch = useDispatch()
+  const transactions = useSelector(getTransactionList)
+  const currentDate = useSelector(getCurrentDate)
 
   const classes = useStyles()
   const theme = useTheme()
 
-  const load = () => {
+  const [loading, setLoading] = useState(false)
+  const [isFormOpen, openForm] = useState(false)
+  const [isRemoveEnabled, enableRemove] = useState(false)
+  const [isRemoveDialogOpen, openRemoveDialog] = useState(false)
+  const [transactionToEdit, setTransactionTotEdit] = useState(new TransactionModel())
+
+  const load = (year?: string, month?: string) => {
+    const transactionService = new TransactionService()
+    if (!year || !month) {
+      year = moment(currentDate).format('YYYY')
+      month = moment(currentDate).format('MM')
+    }
     setLoading(true)
-    setTimeout(() => {
-      console.log("load transactions")
-      setTransactions(generateTransactionsList())
+    transactionService.load(year, month).then((data) => {
+      dispatch(setGeneralReport(data.reports.general))
+      dispatch(setMonthlyReport(data.reports.monthly))
+      dispatch(setTransactionList(data.transactions))
+    }).catch((error) => {
+      console.error('TransactionList.load:' + error)
+    }).finally(() => {
       setLoading(false)
-    }, 3000)
+    })
   }
 
   const edit = (transaction) => {
@@ -76,79 +92,36 @@ const TransactionList = () => {
 
   const remove = () => {
     setLoading(true)
-    setTimeout(() => {
-      console.log('remove transaction', transactionToEdit)
+    const transactionService = new TransactionService()
+    transactionService.delete(transactionToEdit).then(() => {
       load()
       openRemoveDialog(false)
-    }, 3000)
+    }).catch((error) => {
+      console.error('TransactionList.remove', error)
+    }).finally(() => {
+      setLoading(false)
+    })
   }
 
   useEffect(() => {
     load()
+    console.log(action)
+    if (action === 'add') {
+      openForm(true)
+    }
   }, [])
 
   return (
     <>
       <Header/>
-      <Box position="fixed" zIndex="1" width="100%">
-        <Container maxWidth={"sm"} disableGutters={true}>
-          <Box
-            display='flex'
-            justifyContent='space-between'
-            alignItems='center'
-            pt="1.5em"
-            bgcolor={theme.palette.background.default}>
-            <Typography variant='h6' color="primary" style={{paddingLeft: '1em'}}>Transactions</Typography>
-            <Slide direction="down" in={loading} mountOnEnter unmountOnExit>
-              <Box display="flex">
-                <CircularProgress size={20} thickness={5} color="secondary" />
-                <Typography color="secondary" style={{paddingLeft: 5}}>Loading...</Typography>
-              </Box>
-            </Slide>
-            <Button
-              color="primary"
-              className={classes.navButton}
-              startIcon={<AddCircleOutlineIcon color='primary' />}
-              onClick={add}>
-              Add
-            </Button>
-          </Box>
-          <AppBar position="static" elevation={1} className={classes.appbar}>
-            <Toolbar className={classes.toolbar}>
-              <IconButton className={classes.navButton}>
-                <ArrowBack color='primary'/>
-              </IconButton>
-              <Typography variant="h5" color='primary'>April 2021</Typography>
-              <IconButton className={classes.navButton}>
-                <ArrowForward color='primary'/>
-              </IconButton>
-            </Toolbar>
-            <Toolbar className={classes.toolbar}>
-              <IconButton className={classes.navButton}>
-                <SearchIcon color='primary' />
-              </IconButton>
-              <Box display="flex" flexDirection="column" alignItems="center" justifyContent="center">
-                <Typography variant="body2" color='error' style={{fontWeight: 'bold'}}>
-                  Balance -($4,505.33)
-                </Typography>
-                <Typography variant="body2" color='error'>
-                  $500,00 - $5,004.33
-                </Typography>
-              </Box>
-              <IconButton
-                className={classes.navButton}
-                onClick={() => {enableRemove(!isRemoveEnable)}}
-                disabled={transactions.length === 0}>
-                {
-                  (isRemoveEnable)?
-                  <DeleteForever style={{color: theme.palette.error.dark}} /> :
-                  <DeleteSweepIcon color='primary' />
-                }
-              </IconButton>
-            </Toolbar>
-          </AppBar>
-        </Container>
-      </Box>
+      <TransactionListHeader
+        loading={loading}
+        isRemoveEnabled={isRemoveEnabled}
+        isRemoveButtonDisabled={transactions.length === 0}
+        onAdd={add}
+        onChangeMonth={(year, month) => load(year, month)}
+        onRemove={() => enableRemove(!isRemoveEnabled)}
+      />
       <Container maxWidth="xs">
         <Paper elevation={1}>
           <Box style={{height: "14em"}} />
@@ -161,7 +134,7 @@ const TransactionList = () => {
               {transactions.map((transaction: TransactionModel, index: number) => (
                 <TransactionListItem
                   key={index}
-                  isRemoveEnable={isRemoveEnable}
+                  isRemoveEnabled={isRemoveEnabled}
                   transaction={transaction}
                   onClick={() => edit(transaction)}
                   onRemove={() => handleRemove(transaction)}
@@ -200,7 +173,7 @@ const TransactionList = () => {
             <List dense>
               <TransactionListItem
                 transaction={transactionToEdit}
-                isRemoveEnable={false}
+                isRemoveEnabled={false}
                 onClick={() => {}}
                 onRemove={() => {}}
               />
@@ -227,20 +200,6 @@ const TransactionList = () => {
 }
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
-  appbar: {
-    borderTopLeftRadius: '5px',
-    borderTopRightRadius: '5px',
-    borderBottom: '1px solid',
-    borderBottomColor: theme.palette.grey.A100,
-    backgroundColor: theme.palette.background.default,
-  },
-  toolbar: {
-    justifyContent: 'space-between',
-    backgroundColor: 'transparent',
-  },
-  navButton: {
-    height: '100%',
-  },
   form: {
     position: "absolute",
     top: "55%", left: "50%",

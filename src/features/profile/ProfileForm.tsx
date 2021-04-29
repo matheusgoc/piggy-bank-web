@@ -9,7 +9,7 @@ import { ArrowForward } from '@material-ui/icons'
 import { ProfileModel } from '../../models/ProfileModel'
 import { US_STATES } from '../../constants'
 import { useDispatch, useSelector } from 'react-redux';
-import { clearProfile, getProfile, setProfile } from './ProfileSlice';
+import { getProfile, setProfile } from './ProfileSlice';
 
 interface ProfileFormProps {
   onSubmit(): void
@@ -171,7 +171,7 @@ const ProfileForm = ({onSubmit}: ProfileFormProps) => {
             onChange={formik.handleChange}
           />
         </Grid>
-        <Grid xs={12} style={{marginTop: '1.5em'}}>
+        <Grid item xs={12} style={{marginTop: '1.5em'}}>
           <Button
             type='submit'
             variant="contained"

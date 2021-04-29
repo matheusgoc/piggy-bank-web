@@ -21,13 +21,13 @@ import { RemoveCircle } from '@material-ui/icons';
 
 interface TransactionListItemProps {
   transaction: TransactionModel
-  isRemoveEnable: boolean
+  isRemoveEnabled: boolean
   onClick(): void
   onRemove(): void
 }
 
 
-const TransactionListItem = ({transaction, isRemoveEnable, onClick, onRemove}: TransactionListItemProps) => {
+const TransactionListItem = ({transaction, isRemoveEnabled, onClick, onRemove}: TransactionListItemProps) => {
   const classes = useStyles()
   const theme = useTheme()
   const { timestamp, category, place, amount } = transaction
@@ -36,7 +36,7 @@ const TransactionListItem = ({transaction, isRemoveEnable, onClick, onRemove}: T
   const time = moment(timestamp).format('hh:mma')
   const amountFormat = formatCurrency(Number(amount))
   const handleOnClick = () => {
-    if (isRemoveEnable) {
+    if (isRemoveEnabled) {
       console.log("remove transaction")
       onRemove()
     } else {
@@ -49,7 +49,7 @@ const TransactionListItem = ({transaction, isRemoveEnable, onClick, onRemove}: T
       button
       divider={true}
       onClick={handleOnClick}>
-      <Fade in={isRemoveEnable} mountOnEnter unmountOnExit>
+      <Fade in={isRemoveEnabled} mountOnEnter unmountOnExit>
         <ListItemIcon>
           <IconButton>
             <RemoveCircle style={{color: theme.palette.error.dark}} />

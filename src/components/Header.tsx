@@ -95,7 +95,7 @@ const Header = (props: HeaderProps) => {
             <MenuIcon />
           </IconButton>
           <Link href='\'>
-            <img src={"/logo-white-vertical.png"} className={classes.logo} />
+            <img src={"/logo-white-vertical.png"} className={classes.logo} alt="Piggy Bank Logo" />
           </Link>
           {(token)
             ? <Button color="inherit" href='#a' onClick={handleSignOut}>Sign Out</Button>

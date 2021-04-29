@@ -1,22 +1,21 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import moment from 'moment';
-import { TransactionModel } from '../../models/TransactionModel';
 
 export const TransactionSlice = createSlice({
   name: 'transaction',
   initialState: {
     date: moment().startOf('month').toDate(),
-    list: [] as TransactionModel[],
+    list: [],
   },
   reducers: {
     setCurrentDate: (state, action: PayloadAction<Date>) => {
       state.date = action.payload
     },
-    setTransactionList: (state, action: PayloadAction<TransactionModel[]>) => {
+    setTransactionList: (state, action: PayloadAction<any>) => {
       state.list = action.payload
     },
     clearTransactionList: (state) => {
-      state.list = [] as TransactionModel[]
+      state.list = []
     }
   }
 })

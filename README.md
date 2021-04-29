@@ -1,6 +1,6 @@
 # Piggy Bank Web
 
-_Current Version v0.2.0_
+_Current Version v1.0.0_
 
 Piggy Bank Web is the final project for the IT 354 class (Advanced Web Application Development) 
 at Illinois State University (ISU), and a complement for the final project called 

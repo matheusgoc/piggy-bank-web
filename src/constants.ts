@@ -1,7 +1,7 @@
 import { createMuiTheme } from '@material-ui/core'
 
-export const API_URL = "http://piggy-bank-api/api/"
-export const STORAGE_URL = "http://piggy-bank-api/storage/"
+export const API_URL = "http://piggy-bank-staging.us-east-2.elasticbeanstalk.com/api/"
+export const STORAGE_URL = "http://piggy-bank-staging.us-east-2.elasticbeanstalk.com/storage/"
 
 export const COLORS = {
   primary: '#006600',

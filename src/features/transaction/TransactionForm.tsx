@@ -30,6 +30,7 @@ import DateFnsUtils from '@date-io/date-fns'
 import { AddAPhoto, Close, Done, MonetizationOnOutlined } from '@material-ui/icons'
 import { Theme } from '@material-ui/core/styles'
 import { categoriesSamples } from '../../generators'
+import TransactionService from '../../services/TransactionService';
 
 interface TransactionFormProps {
   transaction: TransactionModel
@@ -61,23 +62,28 @@ const TransactionForm = ({transaction, onSave, onClose}: TransactionFormProps) =
   const handleSubmit = (transaction: TransactionModel) => {
 
     setLoading(true)
-    setTimeout(() => {
-      // adjust amount
-      transaction.amount = Math.abs(transaction.amount)
-      if ((transaction.type === 'E')) {
-        transaction.amount = -transaction.amount
-      }
+    const transactionService = new TransactionService()
 
-      // set timestamp
-      transaction.timestamp = extractTimestamp(transaction)
+    // set timestamp
+    transaction.timestamp = extractTimestamp(transaction)
 
-      console.log(transaction)
+    // adjust amount
+    transaction.amount = Math.abs(transaction.amount)
+    if ((transaction.type === 'E')) {
+      transaction.amount = -transaction.amount
+    }
 
-      setLoading(false)
+    transactionService.save(transaction).then(() => {
 
       onSave()
 
-    }, 3000)
+    }).catch((error) => {
+
+      console.error('TransactionForm.handleSubmit', error)
+
+    }).finally(() => {
+      setLoading(false)
+    })
   }
 
   const validationSchema = Yup.object({
